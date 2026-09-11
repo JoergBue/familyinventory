@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Ein Familienmitglied / Benutzer
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  items Item[]
+}
+
+// Eine Kategorie, z.B. "Modelleisenbahn", "Schmuck", "Boot-Inventar"
+model Category {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  icon  String?
+  color String?
+
+  items Item[]
+}
+
+// Ein einzelner Gegenstand
+model Item {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  location      String? // Raum/Standort, z.B. "Wohnzimmer", "Keller", "Boot XY" - wichtig für Versicherungs-Auswertungen
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  currentValue  Float?
+  condition     String? // freier Text, z.B. "neu", "gebraucht - gut", "defekt"
+  manufacturer  String? // Hersteller
+  orderNumber   String? // Bestellnummer
+  serialNumber  String?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  photos Photo[]
+
+  @@index([ownerId])
+  @@index([categoryId])
+}
+
+// Ein Eintrag auf der gemeinsamen Einkaufsliste der Familie
+model ShoppingListItem {
+  id        String   @id @default(cuid())
+  name      String // Bezeichnung
+  store     String? // Einkaufsort
+  quantity  String? // Menge
+  checked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([checked])
+}
+
+// Foto oder Beleg (Kaufquittung etc.) zu einem Gegenstand
+model Photo {
+  id        String   @id @default(cuid())
+  url       String
+  type      String   @default("PHOTO") // "PHOTO" oder "RECEIPT"
+  createdAt DateTime @default(now())
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+}
