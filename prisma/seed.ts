@@ -21,6 +21,16 @@ async function main() {
     });
   }
 
+  const todoAreas = ["Haushalt", "Garten", "Reparaturen", "Sonstiges"];
+
+  for (const name of todoAreas) {
+    await prisma.todoArea.upsert({
+      where: { name },
+      update: {},
+      create: { name },
+    });
+  }
+
   // Erster Benutzer zum Testen des Logins.
   // WICHTIG: Passwort nach dem ersten Login ändern (Passwort-Änderung folgt
   // als eigene Funktion) und hier bei Bedarf um weitere Familienmitglieder
@@ -41,7 +51,7 @@ async function main() {
   });
 
   console.log(
-    `Fertig: ${categories.length} Kategorien und Testbenutzer angelegt.`,
+    `Fertig: ${categories.length} Kategorien, ${todoAreas.length} ToDo-Bereiche und Testbenutzer angelegt.`,
   );
 }
 

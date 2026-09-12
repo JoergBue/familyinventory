@@ -7,8 +7,10 @@ import { LogoutButton } from "./LogoutButton";
 const NAV_ITEMS = [
   { href: "/items", label: "Gegenstände" },
   { href: "/shopping-list", label: "Einkaufsliste" },
+  { href: "/todos", label: "ToDos" },
   { href: "/reports", label: "Auswertungen" },
   { href: "/categories", label: "Kategorien" },
+  { href: "/todo-areas", label: "ToDo-Bereiche" },
   { href: "/users", label: "Familie" },
 ];
 

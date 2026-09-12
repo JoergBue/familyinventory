@@ -72,6 +72,30 @@ model ShoppingListItem {
   @@index([checked])
 }
 
+// Ein Bereich für ToDos, z.B. "Haushalt", "Garten", "Boot"
+model TodoArea {
+  id   String @id @default(cuid())
+  name String @unique
+
+  todos Todo[]
+}
+
+// Ein ToDo-Eintrag der Familie
+model Todo {
+  id         String    @id @default(cuid())
+  title      String // Was soll gemacht werden
+  assignedTo String // Wer soll es tun - freier Text, nicht auf Familienmitglieder beschränkt
+  dueDate    DateTime? // Fertig bis
+  done       Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  areaId String
+  area   TodoArea @relation(fields: [areaId], references: [id])
+
+  @@index([areaId])
+  @@index([done])
+}
+
 // Foto oder Beleg (Kaufquittung etc.) zu einem Gegenstand
 model Photo {
   id        String   @id @default(cuid())
