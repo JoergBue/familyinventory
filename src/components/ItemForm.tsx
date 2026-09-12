@@ -54,6 +54,13 @@ export function ItemForm({
     initialState,
   );
 
+  // Absicherung: sollten categories/owners aus irgendeinem Grund (z.B. ein
+  // kurzzeitiger Versions-Unterschied zwischen Client und Server direkt nach
+  // einem Deployment) doch mal nicht als Array ankommen, lieber eine leere
+  // Liste rendern als die ganze Seite mit einem Absturz zu blockieren.
+  const safeCategories = categories ?? [];
+  const safeOwners = owners ?? [];
+
   return (
     <form action={formAction} className="flex flex-col gap-4">
       {state?.error && (
@@ -90,7 +97,7 @@ export function ItemForm({
             <option value="" disabled>
               Bitte wählen
             </option>
-            {categories.map((c) => (
+            {safeCategories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
@@ -111,7 +118,7 @@ export function ItemForm({
             <option value="" disabled>
               Bitte wählen
             </option>
-            {owners.map((o) => (
+            {safeOwners.map((o) => (
               <option key={o.id} value={o.id}>
                 {o.name}
               </option>

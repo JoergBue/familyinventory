@@ -16,17 +16,18 @@ export default async function UsersPage() {
   const session = await requireSession();
   const isAdmin = session.userRole === "ADMIN";
 
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      lastLoginAt: true,
-      createdAt: true,
-    },
-    orderBy: { createdAt: "asc" },
-  });
+  const users =
+    (await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        lastLoginAt: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "asc" },
+    })) ?? [];
 
   return (
     <main className="mx-auto max-w-2xl p-4 sm:p-6">

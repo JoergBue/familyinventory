@@ -118,9 +118,9 @@ export default async function ItemDetailPage({
         <h2 className="mb-2 text-sm font-medium text-gray-500">
           Fotos &amp; Belege
         </h2>
-        {item.photos.length > 0 && (
+        {(item.photos ?? []).length > 0 && (
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {item.photos.map((photo) => (
+            {(item.photos ?? []).map((photo) => (
               <a key={photo.id} href={photo.url} target="_blank" rel="noreferrer">
                 <Image
                   src={photo.url}
