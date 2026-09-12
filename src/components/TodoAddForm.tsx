@@ -125,7 +125,7 @@ export function TodoAddForm({
       </button>
       {safeAreas.length === 0 && (
         <p className="text-xs text-gray-500">
-          Bitte zuerst unter „ToDo-Bereiche" mindestens einen Bereich anlegen.
+          Bitte zuerst unter ToDo-Bereiche mindestens einen Bereich anlegen.
         </p>
       )}
     </form>

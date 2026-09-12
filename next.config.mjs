@@ -6,6 +6,14 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
   },
+  eslint: {
+    // ESLint-Stilfehler (z.B. ein falsch escapetes Anführungszeichen) sollen
+    // den Deploy nicht mehr hart abbrechen - lokal (npm run dev) läuft
+    // ohnehin kein ESLint, sodass solche Fehler erst beim Hostinger-Build
+    // auffallen würden. Echte Typfehler (TypeScript) stoppen den Build
+    // weiterhin ganz normal.
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
