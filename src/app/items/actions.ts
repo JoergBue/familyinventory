@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/require-session";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import {
   supabaseAdmin,
@@ -10,7 +9,16 @@ import {
   photoUrlToStoragePath,
 } from "@/lib/supabase";
 
-export type ActionState = { error?: string };
+// Kein server-seitiges redirect() mehr nach dem Speichern (siehe
+// createItem/updateItem unten) - die Weiterleitung übernimmt stattdessen
+// die aufrufende Komponente per router.push(), sobald "success" + "itemId"
+// zurückkommen. Grund: Auf manchen Hosting-Umgebungen (z.B. hinter einem
+// Reverse Proxy) kann die spezielle Streaming-Antwort, die Next.js für ein
+// redirect() innerhalb einer Server Action verwendet, zu einem
+// Client-seitigen Absturz führen ("Cannot read properties of undefined
+// (reading 'map')" in einem Next.js-internen Chunk). Löschen/Einkaufsliste
+// nutzen bereits dieses robustere Muster.
+export type ActionState = { error?: string; success?: boolean; itemId?: string };
 
 function str(value: FormDataEntryValue | null): string | null {
   if (!value || typeof value !== "string" || value.trim() === "") return null;
@@ -66,19 +74,16 @@ export async function createItem(
 ): Promise<ActionState> {
   await requireSession();
 
-  let itemId: string;
   try {
     const data = buildData(formData);
     const item = await prisma.item.create({ data });
-    itemId = item.id;
+    revalidatePath("/items");
+    return { success: true, itemId: item.id };
   } catch (e) {
     return {
       error: e instanceof Error ? e.message : "Der Gegenstand konnte nicht gespeichert werden.",
     };
   }
-
-  revalidatePath("/items");
-  redirect(`/items/${itemId}`);
 }
 
 export async function updateItem(
@@ -91,15 +96,14 @@ export async function updateItem(
   try {
     const data = buildData(formData);
     await prisma.item.update({ where: { id: itemId }, data });
+    revalidatePath("/items");
+    revalidatePath(`/items/${itemId}`);
+    return { success: true, itemId };
   } catch (e) {
     return {
       error: e instanceof Error ? e.message : "Der Gegenstand konnte nicht gespeichert werden.",
     };
   }
-
-  revalidatePath("/items");
-  revalidatePath(`/items/${itemId}`);
-  redirect(`/items/${itemId}`);
 }
 
 export async function deleteItem(itemId: string): Promise<ActionState> {

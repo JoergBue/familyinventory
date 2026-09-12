@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/require-session";
 import { hashPassword } from "@/lib/password";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { isUserRole } from "@/lib/roles";
 
 export type UserActionState = { error?: string; success?: boolean };
@@ -136,5 +135,8 @@ export async function updateUser(
   }
 
   revalidatePath("/users");
-  redirect("/users");
+  // Kein server-seitiges redirect() (siehe Kommentar in
+  // src/app/items/actions.ts) - die aufrufende Komponente navigiert selbst
+  // per router.push(), sobald success:true zurückkommt.
+  return { success: true };
 }

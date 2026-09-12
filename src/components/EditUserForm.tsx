@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { updateUser, type UserActionState } from "@/app/users/actions";
 import { USER_ROLES, USER_ROLE_LABELS } from "@/lib/roles";
 
@@ -12,10 +13,17 @@ export function EditUserForm({
 }: {
   user: { id: string; name: string; email: string; role: string };
 }) {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     updateUser.bind(null, user.id),
     initialState,
   );
+
+  useEffect(() => {
+    if (state.success) {
+      router.push("/users");
+    }
+  }, [state.success, router]);
 
   return (
     <form

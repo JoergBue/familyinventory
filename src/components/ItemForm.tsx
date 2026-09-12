@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { ActionState } from "@/app/items/actions";
 
 const CONDITIONS = [
@@ -49,6 +50,7 @@ export function ItemForm({
     formData: FormData,
   ) => Promise<ActionState>;
 }) {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     action,
     initialState,
@@ -60,6 +62,15 @@ export function ItemForm({
   // Liste rendern als die ganze Seite mit einem Absturz zu blockieren.
   const safeCategories = categories ?? [];
   const safeOwners = owners ?? [];
+
+  // Weiterleitung nach erfolgreichem Speichern passiert bewusst hier im
+  // Client (statt per redirect() in der Server Action) - siehe Kommentar in
+  // src/app/items/actions.ts.
+  useEffect(() => {
+    if (state.success && state.itemId) {
+      router.push(`/items/${state.itemId}`);
+    }
+  }, [state.success, state.itemId, router]);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
