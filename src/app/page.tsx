@@ -63,6 +63,13 @@ export default async function Home() {
             <span className="font-semibold">Einkaufsliste</span>
           </Link>
         </div>
+
+        <p className="text-xs text-gray-400">
+          Version vom{" "}
+          {new Date(
+            process.env.NEXT_PUBLIC_BUILD_TIME ?? Date.now(),
+          ).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" })}
+        </p>
       </div>
     </main>
   );
