@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 export interface SessionData {
   userId?: string;
   userName?: string;
+  userRole?: string; // "ADMIN" oder "FAMILY_MEMBER", siehe src/lib/roles.ts
   isLoggedIn: boolean;
 }
 

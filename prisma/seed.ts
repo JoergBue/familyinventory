@@ -28,11 +28,15 @@ async function main() {
   const passwordHash = await bcrypt.hash("aendern123", 12);
   await prisma.user.upsert({
     where: { email: "joerg@buenning.me" },
-    update: {},
+    // Stellt sicher, dass dieser Account immer Admin bleibt (z.B. nach
+    // Einführung der Benutzergruppen) - Passwort wird beim Update NICHT
+    // angefasst, nur bei einer echten Neuanlage gesetzt.
+    update: { role: "ADMIN" },
     create: {
       name: "Jörg",
       email: "joerg@buenning.me",
       passwordHash,
+      role: "ADMIN",
     },
   });
 

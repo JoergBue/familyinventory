@@ -10,11 +10,13 @@ datasource db {
 
 // Ein Familienmitglied / Benutzer
 model User {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String
-  email        String   @unique
+  email        String    @unique
   passwordHash String
-  createdAt    DateTime @default(now())
+  role         String    @default("FAMILY_MEMBER") // "ADMIN" oder "FAMILY_MEMBER"
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
 
   items Item[]
 }

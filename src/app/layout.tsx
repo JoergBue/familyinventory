@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { getSession } from "@/lib/session";
-import { LogoutButton } from "@/components/LogoutButton";
+import { HeaderNav } from "@/components/HeaderNav";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
@@ -45,39 +45,7 @@ export default async function RootLayout({
             <Link href="/" className="font-semibold">
               MyFamily
             </Link>
-            <nav className="flex items-center gap-4">
-              <Link
-                href="/items"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                Gegenstände
-              </Link>
-              <Link
-                href="/shopping-list"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                Einkaufsliste
-              </Link>
-              <Link
-                href="/reports"
-                className="hidden text-sm text-gray-600 hover:text-gray-900 sm:inline"
-              >
-                Auswertungen
-              </Link>
-              <Link
-                href="/categories"
-                className="hidden text-sm text-gray-600 hover:text-gray-900 sm:inline"
-              >
-                Kategorien
-              </Link>
-              <Link
-                href="/users"
-                className="hidden text-sm text-gray-600 hover:text-gray-900 sm:inline"
-              >
-                Familie
-              </Link>
-              <LogoutButton />
-            </nav>
+            <HeaderNav />
           </header>
         )}
         {children}

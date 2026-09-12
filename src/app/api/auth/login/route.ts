@@ -29,9 +29,15 @@ export async function POST(request: Request) {
     );
   }
 
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLoginAt: new Date() },
+  });
+
   const session = await getSession();
   session.userId = user.id;
   session.userName = user.name;
+  session.userRole = user.role;
   session.isLoggedIn = true;
   await session.save();
 
