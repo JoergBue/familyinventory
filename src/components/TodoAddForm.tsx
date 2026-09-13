@@ -6,10 +6,10 @@ import { addTodo, type TodoActionState } from "@/app/todos/actions";
 const initialState: TodoActionState = {};
 
 export function TodoAddForm({
-  areas,
+  areaId,
   suggestedNames,
 }: {
-  areas: { id: string; name: string }[];
+  areaId: string;
   suggestedNames: string[];
 }) {
   const [state, formAction, isPending] = useActionState(
@@ -20,7 +20,6 @@ export function TodoAddForm({
   const titleRef = useRef<HTMLInputElement>(null);
 
   // Absicherung: siehe gleiches Muster in ItemForm.tsx.
-  const safeAreas = areas ?? [];
   const safeNames = suggestedNames ?? [];
 
   useEffect(() => {
@@ -42,6 +41,11 @@ export function TodoAddForm({
         </div>
       )}
 
+      {/* Der Bereich ergibt sich aus der Seite, auf der das Formular
+          angezeigt wird - siehe src/app/todos/[areaId]/page.tsx - deshalb
+          hier keine Auswahl mehr, nur ein verstecktes Feld. */}
+      <input type="hidden" name="areaId" value={areaId} />
+
       <div>
         <label className="mb-1 block text-sm font-medium" htmlFor="title">
           Was soll gemacht werden? *
@@ -57,7 +61,7 @@ export function TodoAddForm({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label
             className="mb-1 block text-sm font-medium"
@@ -83,27 +87,6 @@ export function TodoAddForm({
           </datalist>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium" htmlFor="areaId">
-            Bereich *
-          </label>
-          <select
-            id="areaId"
-            name="areaId"
-            required
-            defaultValue=""
-            className="w-full rounded border border-gray-300 px-3 py-2"
-          >
-            <option value="" disabled>
-              Bitte wählen
-            </option>
-            {safeAreas.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
           <label className="mb-1 block text-sm font-medium" htmlFor="dueDate">
             Fertig bis
           </label>
@@ -118,16 +101,11 @@ export function TodoAddForm({
 
       <button
         type="submit"
-        disabled={isPending || safeAreas.length === 0}
+        disabled={isPending}
         className="self-start rounded bg-gray-900 px-4 py-2.5 text-sm text-white disabled:opacity-50"
       >
         {isPending ? "..." : "+ ToDo hinzufügen"}
       </button>
-      {safeAreas.length === 0 && (
-        <p className="text-xs text-gray-500">
-          Bitte zuerst unter ToDo-Bereiche mindestens einen Bereich anlegen.
-        </p>
-      )}
     </form>
   );
 }

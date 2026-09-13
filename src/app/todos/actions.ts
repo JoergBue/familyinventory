@@ -42,6 +42,10 @@ export async function addTodo(
   }
 
   revalidatePath("/todos");
+  // "[areaId]" als Literal revalidiert die Seite für ALLE Bereiche, nicht
+  // nur den aktuellen - siehe Next.js-Doku zu revalidatePath mit
+  // dynamischen Segmenten.
+  revalidatePath("/todos/[areaId]", "page");
   return { success: true };
 }
 
@@ -58,6 +62,7 @@ export async function toggleTodo(
   }
 
   revalidatePath("/todos");
+  revalidatePath("/todos/[areaId]", "page");
   return {};
 }
 
@@ -71,5 +76,6 @@ export async function deleteTodo(id: string): Promise<{ error?: string }> {
   }
 
   revalidatePath("/todos");
+  revalidatePath("/todos/[areaId]", "page");
   return {};
 }

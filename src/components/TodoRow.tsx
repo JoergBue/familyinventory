@@ -10,7 +10,6 @@ export type TodoEntry = {
   assignedTo: string;
   dueDate: string | null; // ISO-Datumsstring
   done: boolean;
-  area: { id: string; name: string };
 };
 
 function formatDueDate(iso: string | null) {
@@ -92,7 +91,7 @@ export function TodoRow({ todo }: { todo: TodoEntry }) {
             todo.done ? "text-gray-300" : "text-gray-500"
           }`}
         >
-          {todo.area.name} · {todo.assignedTo}
+          {todo.assignedTo}
           {dueLabel && (
             <>
               {" · "}

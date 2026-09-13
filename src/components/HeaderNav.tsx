@@ -4,24 +4,37 @@ import Link from "next/link";
 import { useState } from "react";
 import { LogoutButton } from "./LogoutButton";
 
-const NAV_ITEMS = [
+type TodoAreaLink = { id: string; name: string };
+
+const ITEMS_BEFORE_TODOS = [
   { href: "/items", label: "Gegenstände" },
   { href: "/shopping-list", label: "Einkaufsliste" },
-  { href: "/todos", label: "ToDos" },
+];
+
+const ITEMS_AFTER_TODOS = [
   { href: "/reports", label: "Auswertungen" },
   { href: "/categories", label: "Kategorien" },
   { href: "/todo-areas", label: "ToDo-Bereiche" },
   { href: "/users", label: "Familie" },
 ];
 
-export function HeaderNav() {
+export function HeaderNav({ todoAreas }: { todoAreas: TodoAreaLink[] }) {
   const [open, setOpen] = useState(false);
+
+  // Ein Menüeintrag pro ToDo-Bereich, generiert aus den unter
+  // "ToDo-Bereiche" angelegten Einträgen (siehe src/app/todo-areas).
+  const todoItems = (todoAreas ?? []).map((area) => ({
+    href: `/todos/${area.id}`,
+    label: `ToDo: ${area.name}`,
+  }));
+
+  const navItems = [...ITEMS_BEFORE_TODOS, ...todoItems, ...ITEMS_AFTER_TODOS];
 
   return (
     <>
       {/* Ab "sm" (Tablet/Desktop): normale horizontale Navigation */}
-      <nav className="hidden items-center gap-4 sm:flex">
-        {NAV_ITEMS.map((item) => (
+      <nav className="hidden flex-wrap items-center gap-4 sm:flex">
+        {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
@@ -65,8 +78,8 @@ export function HeaderNav() {
               className="fixed inset-0 z-10"
               onClick={() => setOpen(false)}
             />
-            <div className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
-              {NAV_ITEMS.map((item) => (
+            <div className="absolute right-0 z-20 mt-2 w-56 max-h-[calc(100vh-4rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

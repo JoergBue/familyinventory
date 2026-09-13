@@ -15,6 +15,7 @@ model User {
   email        String    @unique
   passwordHash String
   role         String    @default("FAMILY_MEMBER") // "ADMIN" oder "FAMILY_MEMBER"
+  avatarUrl    String? // Profilbild (Supabase Storage), nur von Admins änderbar
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
 

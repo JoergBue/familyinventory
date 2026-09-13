@@ -30,6 +30,8 @@ export async function createTodoArea(
 
   revalidatePath("/todo-areas");
   revalidatePath("/todos");
+  // Neuer Bereich => neuer Menüeintrag in der Kopfzeile (Root-Layout).
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -53,5 +55,8 @@ export async function deleteTodoArea(
 
   revalidatePath("/todo-areas");
   revalidatePath("/todos");
+  // Gelöschter Bereich => Menüeintrag in der Kopfzeile (Root-Layout) muss
+  // verschwinden.
+  revalidatePath("/", "layout");
   return {};
 }

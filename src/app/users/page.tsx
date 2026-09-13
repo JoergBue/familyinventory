@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/require-session";
 import { UserForm } from "@/components/UserForm";
+import { UserAvatar } from "@/components/UserAvatar";
 import { USER_ROLE_LABELS, isUserRole } from "@/lib/roles";
 
 function formatLastLogin(date: Date | null) {
@@ -23,6 +24,7 @@ export default async function UsersPage() {
         name: true,
         email: true,
         role: true,
+        avatarUrl: true,
         lastLoginAt: true,
         createdAt: true,
       },
@@ -39,14 +41,17 @@ export default async function UsersPage() {
             key={u.id}
             className="flex items-center justify-between gap-3 rounded border border-gray-200 bg-white p-3 text-sm"
           >
-            <div className="min-w-0">
-              <p className="font-medium">{u.name}</p>
-              <p className="text-gray-500">{u.email}</p>
-              <p className="mt-1 text-xs text-gray-400">
-                {isUserRole(u.role) ? USER_ROLE_LABELS[u.role] : u.role}
-                {" · "}
-                Letzte Anmeldung: {formatLastLogin(u.lastLoginAt)}
-              </p>
+            <div className="flex min-w-0 items-center gap-3">
+              <UserAvatar name={u.name} avatarUrl={u.avatarUrl} size={40} />
+              <div className="min-w-0">
+                <p className="font-medium">{u.name}</p>
+                <p className="text-gray-500">{u.email}</p>
+                <p className="mt-1 text-xs text-gray-400">
+                  {isUserRole(u.role) ? USER_ROLE_LABELS[u.role] : u.role}
+                  {" · "}
+                  Letzte Anmeldung: {formatLastLogin(u.lastLoginAt)}
+                </p>
+              </div>
             </div>
             {isAdmin && (
               <Link

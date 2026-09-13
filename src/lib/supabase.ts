@@ -38,3 +38,20 @@ export function photoUrlToStoragePath(url: string): string | null {
   if (idx === -1) return null;
   return url.slice(idx + marker.length);
 }
+
+// Name des Storage-Buckets für Profilbilder. Muss im Supabase-Dashboard
+// unter Storage GENAUSO NEU angelegt werden wie item-photos (als "Public
+// bucket") - ist ein eigener Bucket, damit Profilbilder unabhängig von den
+// Gegenstands-Fotos verwaltet werden können.
+export const AVATARS_BUCKET = "avatars";
+
+export function buildAvatarStoragePath(userId: string, filename: string) {
+  return `${userId}/${filename}`;
+}
+
+export function avatarUrlToStoragePath(url: string): string | null {
+  const marker = `/storage/v1/object/public/${AVATARS_BUCKET}/`;
+  const idx = url.indexOf(marker);
+  if (idx === -1) return null;
+  return url.slice(idx + marker.length);
+}
